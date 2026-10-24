@@ -62,12 +62,91 @@
         .mb-2 { margin-bottom: 0.5rem; } .mb-4 { margin-bottom: 1.5rem; }
         .mt-3 { margin-top: 1rem; } .mt-auto { margin-top: auto; } .w-100 { width: 100%; }
 
-        /* ================= INTRO LOADING ================= */
-        #intro-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-darker); z-index: 99999; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease, visibility 0.8s ease; }
+        /* ================= INTRO LOADING (UPGRADE ARC REACTOR) ================= */
+        #intro-loader { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: #050810; z-index: 99999; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: opacity 0.8s ease, visibility 0.8s ease; 
+            overflow: hidden;
+        }
         #intro-loader.hidden { opacity: 0; visibility: hidden; }
-        .intro-text { font-size: 2.5rem; font-weight: 800; letter-spacing: 5px; text-transform: uppercase; animation: pulseColor 1.5s infinite alternate; }
-        .intro-text span { color: var(--accent); }
-        @keyframes pulseColor { 0% { transform: scale(1); text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); } 100% { transform: scale(1.1); text-shadow: 0 0 30px rgba(239, 68, 68, 0.8); } }
+
+        /* Grid Background */
+        .intro-grid-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 5s linear infinite;
+            z-index: 1;
+        }
+        @keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
+
+        .arc-reactor {
+            position: relative;
+            width: 180px; height: 180px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 30px;
+            z-index: 2;
+        }
+        
+        /* Ring 1 (Luar) */
+        .ring-1 {
+            position: absolute; width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 4px solid rgba(59, 130, 246, 0.1);
+            border-top: 4px solid #3B82F6;
+            border-bottom: 4px solid #EF4444;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            animation: spin 3s linear infinite;
+        }
+        
+        /* Ring 2 (Tengah Putus-putus) */
+        .ring-2 {
+            position: absolute; width: 75%; height: 75%;
+            border-radius: 50%;
+            border: 2px dashed rgba(239, 68, 68, 0.6);
+            animation: spinReverse 4s linear infinite;
+        }
+        
+        /* Ring 3 (Scanner Dalam) */
+        .ring-3 {
+            position: absolute; width: 55%; height: 55%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-left: 4px solid #60A5FA;
+            border-right: 4px solid #EF4444;
+            animation: spin 1.5s linear infinite;
+        }
+
+        /* Core Inti */
+        .core {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 20px #fff, 0 0 40px #60A5FA, 0 0 80px #3B82F6, inset 0 0 10px #000;
+            animation: pulseCore 1s infinite alternate;
+        }
+
+        .hud-text { 
+            color: #60A5FA; font-family: monospace; font-size: 1.2rem; font-weight: bold;
+            letter-spacing: 4px; text-transform: uppercase; 
+            text-shadow: 0 0 10px #3B82F6; z-index: 2;
+            animation: flicker 2s infinite;
+        }
+        
+        .hud-text span { color: #EF4444; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+        @keyframes pulseCore { 
+            0% { transform: scale(0.9); box-shadow: 0 0 20px #fff, 0 0 40px #60A5FA, 0 0 60px #3B82F6; } 
+            100% { transform: scale(1.1); box-shadow: 0 0 30px #fff, 0 0 60px #60A5FA, 0 0 100px #EF4444; } 
+        }
+        @keyframes flicker { 
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 
+            20%, 22%, 24%, 55% { opacity: 0.5; } 
+        }
 
         /* ================= BACKGROUND ================= */
         .bg-mesh { background-color: var(--bg-main); background-image: radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 40%), radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.15) 0%, transparent 40%); }
@@ -517,9 +596,16 @@
 </head>
 <body>
 
-    <!-- INTRO LOADING -->
+    <!-- INTRO LOADING (UPGRADE ARC REACTOR) -->
     <div id="intro-loader">
-        <div class="intro-text">ABI<span>COMP</span></div>
+        <div class="intro-grid-bg"></div>
+        <div class="arc-reactor">
+            <div class="ring-1"></div>
+            <div class="ring-2"></div>
+            <div class="ring-3"></div>
+            <div class="core"></div>
+        </div>
+        <div class="hud-text">INITIALIZING<span>...</span></div>
     </div>
 
     <!-- NAVBAR -->
@@ -585,7 +671,6 @@
                     <button class="slider-btn prev" onclick="moveSlide(-1)"><i class="fas fa-chevron-left"></i></button>
                     
                     <div class="hero-slider" id="heroSlider">
-                        <!-- Menambahkan onerror agar jika gambar tidak ada, diganti placeholder rapi -->
                         <img src="prto1.jpg" alt="Pelatihan Teknisi Laptop" class="hero-slide-img" onerror="this.src='https://placehold.co/800x600/1e293b/e2e8f0?text=Foto+Utama+1'">
                         <img src="prto2.jpg" alt="Praktik Motherboard" class="hero-slide-img" onerror="this.src='https://placehold.co/800x600/1e293b/e2e8f0?text=Foto+Utama+2'">
                         <img src="prto3.jpg" alt="Suasana Pelatihan" class="hero-slide-img" onerror="this.src='https://placehold.co/800x600/1e293b/e2e8f0?text=Foto+Utama+3'">
@@ -1007,7 +1092,7 @@
         </div>
     </section>
 
-    <!-- KARIR SECTION -->
+    <!-- KARIR SECTION (DIUBAH TOTAL DENGAN 6 JUDUL BARU & LINK JPG PUBLIC) -->
     <section class="section bg-mesh" id="karir">
         <div class="container">
             <div class="section-header text-center" data-aos="fade-up">
@@ -1015,28 +1100,52 @@
                 <p>Setelah lulus, Anda memiliki banyak peluang untuk mengembangkan keahlian Anda.</p>
             </div>
             <div class="grid-3">
-                <!-- Kartu 1: Suasana Pelatihan -->
+                <!-- Kartu 1: FOTO BARU (BUKA WORKSHOP SERVICE SENDIRI) -->
                 <div class="karir-card" data-aos="fade-right" data-aos-delay="100">
-                    <img src="prto3.jpg" alt="Suasana Pelatihan" onerror="this.src='https://placehold.co/600x400/1e293b/white?text=Suasana'">
+                    <img src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=600&auto=format&fit=crop" alt="Buka Workshop Service Sendiri">
                     <div class="karir-content">
-                        <h3>Suasana Pelatihan</h3>
-                        <p>Suasana pelatihan yang nyaman dan mudah dipahami.</p>
+                        <h3>Buka Workshop Service Sendiri</h3>
+                        <p>Banyak alumni sukses membuka usaha servis laptop mandiri berkat bimbingan bisnis dari kami.</p>
                     </div>
                 </div>
-                <!-- Kartu 2:  -->
+                <!-- Kartu 2 -->
                 <div class="karir-card" data-aos="fade-up" data-aos-delay="200">
-                    <img src="prto4.jpg" alt="Sertifikat" onerror="this.src='https://placehold.co/600x400/1e293b/white?text=Sertifikat'">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600&auto=format&fit=crop" alt="Teknisi Inhouse Perusahaan">
                     <div class="karir-content">
-                        <h3>Pemberian Sertifikat</h3>
-                        <p>Pemberian sertifikat yang mendukung setiap selesai kursus. Class Abi Comp telah mendapatkan sertifikat yang menandakan siswa telah mampu mandiri sebagai teknisi laptop.</p>
+                        <h3>Teknisi Inhouse Perusahaan</h3>
+                        <p>Siap bekerja sebagai teknisi IT inhouse di berbagai perusahaan, instansi, maupun toko komputer ternama.</p>
                     </div>
                 </div>
-                <!-- Kartu 3: Pemberian Sertifikat -->
+                <!-- Kartu 3 -->
                 <div class="karir-card" data-aos="fade-left" data-aos-delay="300">
-                    <img src="prto5.jpg" alt="Workshop Abicomp-SBY" onerror="this.src='https://placehold.co/600x400/1e293b/white?text=Workshop'">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop" alt="Spesialis Motherboard & BGA">
                     <div class="karir-content">
-                        <h3>Workshop Abicomp-SBY</h3>
-                        <p>Workshop Abicomp-SBY berdiri sejak tahun 2015.</p>
+                        <h3>Spesialis Motherboard & BGA</h3>
+                        <p>Menjadi ahli bedah jalur dan chipset dengan standar industri, sangat dicari oleh pelanggan.</p>
+                    </div>
+                </div>
+                <!-- Kartu 4 -->
+                <div class="karir-card" data-aos="fade-right" data-aos-delay="400">
+                    <img src="https://images.unsplash.com/photo-1593642532744-d377ab507dc8?q=80&w=600&auto=format&fit=crop" alt="Jasa Panggilan / Freelance">
+                    <div class="karir-content">
+                        <h3>Jasa Panggilan / Freelance</h3>
+                        <p>Buka jasa servis panggilan ke rumah atau kantor dengan jam kerja yang fleksibel dan mandiri.</p>
+                    </div>
+                </div>
+                <!-- Kartu 5 -->
+                <div class="karir-card" data-aos="fade-up" data-aos-delay="500">
+                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=600&auto=format&fit=crop" alt="Trainer / Instruktur IT">
+                    <div class="karir-content">
+                        <h3>Trainer / Instruktur IT</h3>
+                        <p>Bagi yang memiliki passion mengajar, bisa melanjutkan karir sebagai instruktur di lembaga pelatihan.</p>
+                    </div>
+                </div>
+                <!-- Kartu 6 -->
+                <div class="karir-card" data-aos="fade-left" data-aos-delay="600">
+                    <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=600&auto=format&fit=crop" alt="Manajer Toko Komputer">
+                    <div class="karir-content">
+                        <h3>Manajer Toko Komputer</h3>
+                        <p>Mengelola operasional toko komputer atau pusat servis dengan keahlian teknis dan manajerial.</p>
                     </div>
                 </div>
             </div>
@@ -1277,7 +1386,7 @@
             const loader = document.getElementById('intro-loader');
             setTimeout(() => {
                 loader.classList.add('hidden');
-            }, 2500); 
+            }, 2000); // 2 detik
         });
 
         document.addEventListener('DOMContentLoaded', () => {
